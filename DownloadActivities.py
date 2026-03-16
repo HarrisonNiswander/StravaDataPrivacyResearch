@@ -61,7 +61,7 @@ print(len(all_activities))
 import csv
 columnHeaders = all_activities[0].keys()
 
-with open('AthleteB.csv', mode='w', newline='', encoding='utf-8') as file:
+with open('AthleteC.csv', mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
     writer.writerow(columnHeaders)
 
