@@ -14,9 +14,9 @@ auth_url = "https://www.strava.com/oauth/token"
 activites_url = "https://www.strava.com/api/v3/athlete/activities"
 
 payload = {
-    'client_id': "213002",
-    'client_secret': 'a130763a602abf1591d5fceb788b12efc027c676',
-    'refresh_token': '9108529fa87fd999f42b3746131f6931ba0ff756',
+    'client_id': " ",
+    'client_secret': ' ',
+    'refresh_token': ' ',
     'grant_type': "refresh_token",
     'f': 'json'
 }
@@ -61,7 +61,7 @@ print(len(all_activities))
 import csv
 columnHeaders = all_activities[0].keys()
 
-with open('AthleteF.csv', mode='w', newline='', encoding='utf-8') as file:
+with open('AthleteH.csv', mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
     writer.writerow(columnHeaders)
 
