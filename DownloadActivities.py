@@ -14,9 +14,9 @@ auth_url = "https://www.strava.com/oauth/token"
 activites_url = "https://www.strava.com/api/v3/athlete/activities"
 
 payload = {
-    'client_id': " ",
-    'client_secret': ' ',
-    'refresh_token': ' ',
+    'client_id': "213002",
+    'client_secret': 'a130763a602abf1591d5fceb788b12efc027c676',
+    'refresh_token': '9108529fa87fd999f42b3746131f6931ba0ff756',
     'grant_type': "refresh_token",
     'f': 'json'
 }
