@@ -79,7 +79,7 @@ for _, row in startCoord.iterrows():
     
     folium.CircleMarker(
         location=[row['start_lat'], row['start_lng']],
-        radius=3,
+        radius = 3,
         color=color,
         fill=True,
         fill_opacity=0.7
@@ -94,6 +94,10 @@ for cluster, row in centers.iterrows():
         popup=f"Cluster {cluster}",
         icon=folium.Icon(color='red', icon='info-sign')
     ).add_to(athleteMap)
+
+#add heat map
+# from folium.plugins import HeatMap
+# HeatMap(startCoord[['start_lat','start_lng']].values).add_to(athleteMap)
 
 #save map
 athleteMap.save("Athlete" + athlete + "Map.html")
