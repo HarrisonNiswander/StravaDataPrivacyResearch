@@ -31,7 +31,7 @@ startCord_rad = np.radians(startCoord)
 
 # DBSCAN with haversine metric -> convert to radians so we can do distance
 kms_per_radian = 6371.0088
-epsilon = 0.5 / kms_per_radian      #Radius for Clustering
+epsilon = 0.25 / kms_per_radian      #Radius for Clustering
 
 db = DBSCAN(
     eps=epsilon,
