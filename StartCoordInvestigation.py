@@ -12,7 +12,7 @@ athlete = "A"
 #import athlete data
 df = pd.read_csv('Athlete_Data/Athlete' + athlete + '.csv')
 
-# Convert starting longitude and latitude into seperate columns
+# Convert starting longitude and latitude into seperate columns (coords in decminal degrees format)
 # Convert string → list
 df['start_latlng'] = df['start_latlng'].apply(ast.literal_eval)
 
@@ -101,3 +101,15 @@ for cluster, row in centers.iterrows():
 
 #save map
 athleteMap.save("Athlete" + athlete + "Map.html")
+
+#
+# Cluster by time
+#
+
+#add clustering option for by hour (time in ISO 8601 format)
+df['hour'] = pd.to_datetime(df['start_date_local'], errors='coerce').dt.hour
+
+startCoord['hour'] = df.loc[startCoord.index, 'hour']
+
+hourCluster = startCoord.groupby('cluster')['hour'].mean()
+print(hourCluster)
