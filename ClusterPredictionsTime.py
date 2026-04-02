@@ -60,6 +60,7 @@ startCoord['cluster'].value_counts()
 
 #find the center of the clusters
 cluster_centers = startCoord.groupby('cluster')[['start_lat','start_lng']].mean()
+print("Cluster Centers (Lat, Lng):\n")
 print(cluster_centers)
 
 # Merge time data back in after DBSCAN
@@ -84,9 +85,11 @@ y = data['cluster']
 #10% Iterative Removal = Stratified Cross Validation
 skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 
-all_results = []
-
 #repeat train and prediction for each 10% fold removal
+top_k = 5       
+all_results = []
+print("\nStarting Cross-Validation and Prediction...")
+
 for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
     print(f"Fold {fold+1}")
 
@@ -96,38 +99,72 @@ for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
-    # Predictions
-    y_pred = model.predict(X_test)
-
-    # Probabilities (THIS is what you want)
-    y_proba = model.predict_proba(X_test)
-
-    acc = accuracy_score(y_test, y_pred)
-    print("Accuracy:", acc)
-
-    # Store results
-    fold_results = pd.DataFrame(y_proba, columns=model.classes_)
-    fold_results['true_cluster'] = y_test.values
-
-    all_results.append(fold_results)
-
-    #rank predicted clusters by confidence
     probs = model.predict_proba(X_test)
-
-    # Get ranked clusters
-    ranked_clusters = np.argsort(-probs, axis=1)
-
-    #map back to cluster labels
+    preds = model.predict(X_test)
     cluster_labels = model.classes_
 
-    top_k = 3
-
     for i in range(len(X_test)):
-        ranked = cluster_labels[ranked_clusters[i][:top_k]]
-        confidence = probs[i][ranked_clusters[i][:top_k]]
+        prob_row = probs[i]
 
-        #print(f"Top predictions: {list(zip(ranked, confidence))}")
+        # Rank clusters by confidence
+        ranked_idx = np.argsort(-prob_row)
+        top_clusters = cluster_labels[ranked_idx[:top_k]]
+        top_conf = prob_row[ranked_idx[:top_k]]
 
-#final results
-final_results = pd.concat(all_results)
-print(final_results)
+        result = {
+            'fold': fold + 1,
+            'true_cluster': y_test.iloc[i],
+            'predicted_cluster': preds[i],
+            'correct': preds[i] == y_test.iloc[i],
+        }
+
+        # Add top-k predictions
+        for k in range(top_k):
+            result[f'top{k+1}_cluster'] = top_clusters[k]
+            result[f'top{k+1}_confidence'] = top_conf[k]
+
+        #Rank of true cluster in predictions
+        ranked_idx = np.argsort(-prob_row)
+        ranked_clusters = cluster_labels[ranked_idx]
+
+        true_rank = np.where(ranked_clusters == y_test.iloc[i])[0][0] + 1
+        result['true_rank'] = true_rank
+
+
+        all_results.append(result)
+
+#save all results into dataframe
+results_df = pd.DataFrame(all_results)
+
+#save results to csv
+results_df.to_csv('coordCluster_TimePredict/coordCluster_TimePredict_Athlete' + athlete + '.csv', index=False)
+
+#print useful results
+print("\n--------------------------------------------")
+print("Prediction Results for Athlete " + athlete)
+print("--------------------------------------------\n")
+
+#overall accuracy
+print("Overall Accuracy:", results_df['correct'].mean())
+
+#rank accuracy
+max_k = 9   # or number of clusters
+
+rank_accuracies = {}
+
+for k in range(1, max_k + 1):
+    rank_accuracies[k] = (results_df['true_rank'] <= k).mean()
+
+#print results
+print("\nCluster Prediction Accuracy by Rank:")
+for k, acc in rank_accuracies.items():
+    print(f"Top-{k} Accuracy: {acc:.4f}")
+
+#graph
+import matplotlib.pyplot as plt
+
+plt.plot(list(rank_accuracies.keys()), list(rank_accuracies.values()))
+plt.xlabel("K (Rank)")
+plt.ylabel("Accuracy (Hit Rate)")
+plt.title("Top-K Cluster Prediction Accuracy")
+plt.show()
