@@ -137,7 +137,7 @@ for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
 results_df = pd.DataFrame(all_results)
 
 #save results to csv
-results_df.to_csv('coordCluster_TimePredict/coordCluster_TimePredict_Athlete' + athlete + '.csv', index=False)
+results_df.to_csv('clusterPred_TimeData/timeAthlete' + athlete + '.csv', index=False)
 
 #print useful results
 print("\n--------------------------------------------")
