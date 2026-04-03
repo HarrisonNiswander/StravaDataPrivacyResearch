@@ -10,7 +10,7 @@ import ast
 athlete = "A"
 
 #import athlete data
-df = pd.read_csv('startCoordinateAnalysis/Athlete_Data/Athlete' + athlete + '.csv', on_bad_lines='skip')
+df = pd.read_csv('Athlete_Data/Athlete' + athlete + '.csv', on_bad_lines='skip')
 
 # Convert starting longitude and latitude into seperate columns (coords in decminal degrees format)
 # Convert string → list
