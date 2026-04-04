@@ -6,12 +6,19 @@
 import pandas as pd
 import ast
 import numpy as np
+import os
 
 #Define Athlete (by letter)
 athlete = "A"
 
+# Get script directory and construct paths
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
+athlete_data_path = os.path.join(parent_dir, 'Athlete_Data', f'Athlete{athlete}.csv')
+output_path = os.path.join(script_dir, 'clusterPred_TimeData', f'timeAthlete{athlete}.csv')
+
 #import athlete data
-df = pd.read_csv('Athlete_Data/Athlete' + athlete + '.csv', on_bad_lines='skip')
+df = pd.read_csv(athlete_data_path, on_bad_lines='skip')
 
 #obtain time
 df['start_date_local'] = pd.to_datetime(df['start_date_local'], errors='coerce')
@@ -130,6 +137,9 @@ for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
         true_rank = np.where(ranked_clusters == y_test.iloc[i])[0][0] + 1
         result['true_rank'] = true_rank
 
+        # Add time features for this specific test sample
+        result['hour'] = data.iloc[test_idx[i]]['hour']
+        result['day_of_week'] = data.iloc[test_idx[i]]['day_of_week']
 
         all_results.append(result)
 
@@ -137,7 +147,7 @@ for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
 results_df = pd.DataFrame(all_results)
 
 #save results to csv
-results_df.to_csv('clusterPred_TimeData/timeAthlete' + athlete + '.csv', index=False)
+results_df.to_csv(output_path, index=False)
 
 #print useful results
 print("\n--------------------------------------------")
