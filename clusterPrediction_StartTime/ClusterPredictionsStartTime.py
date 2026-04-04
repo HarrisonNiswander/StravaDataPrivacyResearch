@@ -15,7 +15,7 @@ athlete = "A"
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)
 athlete_data_path = os.path.join(parent_dir, 'Athlete_Data', f'Athlete{athlete}.csv')
-output_path = os.path.join(script_dir, 'clusterPred_TimeData', f'timeAthlete{athlete}.csv')
+output_path = os.path.join(script_dir, 'clusterPred_StartTimeData', f'startTimeAthlete{athlete}.csv')
 
 #import athlete data
 df = pd.read_csv(athlete_data_path, on_bad_lines='skip')

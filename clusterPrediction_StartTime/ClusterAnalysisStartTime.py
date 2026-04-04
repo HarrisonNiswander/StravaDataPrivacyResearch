@@ -11,7 +11,7 @@ athlete = "A"
 
 # Get script directory and construct path
 script_dir = os.path.dirname(os.path.abspath(__file__))
-results_path = os.path.join(script_dir, 'clusterPred_TimeData', f'timeAthlete{athlete}.csv')
+results_path = os.path.join(script_dir, 'clusterPred_StartTimeData', f'startTimeAthlete{athlete}.csv')
 
 #import cluster data
 results = pd.read_csv(results_path, on_bad_lines='skip')
